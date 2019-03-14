@@ -86,6 +86,7 @@ class Episode:
             for o in objects:
                 if o['visible'] and o['objectType'] == 'Tomato' and self.target['Tomato'] == False: # Check if already picked up
                     tomato_id = o['objectId']
+                    self.cookId['Tomato'] = tomato_id
                     is_tomato_picked_up = self._env.pickup_tomato(tomato_id)
 
                     if is_tomato_picked_up:
@@ -103,7 +104,8 @@ class Episode:
             for o in objects:
                 if o['visible'] and o['objectType'] == 'Microwave' and self.target['Microwave'] == False:  # Check if already picked up
                     microwave_id = o['objectId']
-                    is_cooked = self._env.cook_tomato(microwave_id)
+                    self.cookId['Microwave'] = microwave_id
+                    is_cooked = self._env.cook_tomato(microwave_id, self.cookId['Tomato'])
 
                     if is_cooked:
                         self.target['Microwave'] = True
@@ -146,6 +148,7 @@ class Episode:
 
         # For now, single target.
         self.target = {'Tomato':False,'Microwave':False}
+        self.cookId = {'Tomato':-1,'Microwave':-1}
         self.triedFind = {'Tomato':False, 'Microwave':False}
         self.success = False
         self.cur_scene = scene
