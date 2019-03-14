@@ -99,18 +99,16 @@ class Episode:
         if action['action'] == 'LookMicrowave':
             objects = self._env.last_event.metadata['objects']
             for o in objects:
-                if o['visible'] and o['objectType'] == 'Microwave' and self.target['Cook'] == False:  # Check if already picked up
+                if o['visible'] and o['objectType'] == 'Microwave' and self.target['Microwave'] == False:  # Check if already picked up
                     microwave_id = o['objectId']
                     self.cookId['Microwave'] = microwave_id
                     is_cooked = self._env.cook_tomato(microwave_id, self.cookId['Tomato'])
 
                     if is_cooked == 1:
                         self.triedFind['Microwave'] = True
-                        reward += 1
 
                     elif is_cooked == 3:
                         self.triedFind['PlaceTomato'] = True
-                        reward += 3
 
                     elif is_cooked == 5:
                         self.triedFind['Cook'] = True
