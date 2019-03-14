@@ -156,7 +156,7 @@ class A3CAgent:
         return gpuify(state.unsqueeze(0), self.gpu_id)
 
     def preprocess_triedFind(self, triedFind):
-        state = torch.Tensor([triedFind['Tomato'], triedFind['Bowl']])
+        state = torch.Tensor([triedFind['Tomato'], triedFind['Microwave']])
         return gpuify(state.unsqueeze(0), self.gpu_id)
 
     def exit(self):

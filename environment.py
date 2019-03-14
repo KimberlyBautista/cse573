@@ -99,7 +99,7 @@ class Environment:
     def step(self, action_dict):
         curr_state = ThorAgentState.get_state_from_evenet(event=self.controller.last_event, forced_y=self.y)
         next_state = get_next_state(curr_state, action_dict['action'], copy_state=True)
-        if action_dict['action'] in ['LookUp', 'LookDown', 'RotateLeft', 'RotateRight', 'MoveAhead', 'LookTomato', 'LookBowl']:
+        if action_dict['action'] in ['LookUp', 'LookDown', 'RotateLeft', 'RotateRight', 'MoveAhead', 'LookTomato', 'LookMicrowave']:
             if next_state is None:
                 self.last_event.metadata['lastActionSuccess'] = False
             else:
@@ -138,6 +138,35 @@ class Environment:
         self.teleport_agent_to(**state)
         self.start_state = copy.deepcopy(state)
         return
+
+    def pickup_tomato(self, tomato_id):
+        try:
+            event = self.controller.step(dict(action='PickupObject', objectId=tomato_id), raise_for_failure=True)
+            return True
+        except:
+            print("Did not pick up tomato")
+            return False
+
+    def cook_tomato(self, microwave_id, tomato_id):
+        try:
+            event = self.controller.step(dict(action='OpenObject', objectId=microwave_id), raise_for_failure=True)
+        except:
+            print("Did not open microwave")
+            return False
+
+        try:
+            event = self.controller.step(dict(action='PlaceHeldObject', objectId=tomato_id), raise_for_failure=True)
+        except:
+            print("Did not place tomato")
+            return False
+
+        try:
+            event = self.controller.step(dict(action='CloseObject', objectId=microwave_id), raise_for_failure=True)
+            return True
+        except:
+            print("Did not close microwave")
+            return False
+
 
     @property
     def reachable_points(self):

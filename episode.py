@@ -83,18 +83,36 @@ class Episode:
 
             self.triedFind['Tomato'] = True
             objects = self._env.last_event.metadata['objects']
-            visible_objects = [o['objectType'] for o in objects if o['visible']]
-            if 'Tomato' in visible_objects and (self.target['Tomato'] == False) :
-                self.target['Tomato'] = True
-                reward += GOAL_SUCCESS_REWARD
+            for o in objects:
+                if o['visible'] and o['objectType'] == 'Tomato' and self.target['Tomato'] == False: # Check if already picked up
+                    tomato_id = o['objectId']
+                    is_tomato_picked_up = self._env.pickup_tomato(tomato_id)
 
-        if action['action'] == 'LookBowl':
-            self.triedFind['Bowl'] = True
+                    if is_tomato_picked_up:
+                        self.target['Tomato'] = True
+                        reward += GOAL_SUCCESS_REWARD
+            # visible_objects = [o['objectType'] for o in objects if o['visible']]
+            # if 'Tomato' in visible_objects and (self.target['Tomato'] == False) :
+            #     self.target['Tomato'] = True
+            #     reward += GOAL_SUCCESS_REWARD
+
+        if action['action'] == 'LookMicrowave':
+            self.triedFind['Microwave'] = True
+
             objects = self._env.last_event.metadata['objects']
-            visible_objects = [o['objectType'] for o in objects if o['visible']]
-            if 'Bowl' in visible_objects and (self.target['Bowl'] == False):
-                self.target['Bowl'] = True
-                reward += GOAL_SUCCESS_REWARD
+            for o in objects:
+                if o['visible'] and o['objectType'] == 'Microwave' and self.target['Microwave'] == False:  # Check if already picked up
+                    microwave_id = o['objectId']
+                    is_cooked = self._env.cook_tomato(microwave_id)
+
+                    if is_cooked:
+                        self.target['Microwave'] = True
+                        reward += GOAL_SUCCESS_REWARD
+            # objects = self._env.last_event.metadata['objects']
+            # visible_objects = [o['objectType'] for o in objects if o['visible']]
+            # if 'Bowl' in visible_objects and (self.target['Bowl'] == False):
+            #     self.target['Bowl'] = True
+            #     reward += GOAL_SUCCESS_REWARD
 
         if action['action'] == 'Done':
             done = True
@@ -102,7 +120,7 @@ class Episode:
             #visible_objects = [o['objectType'] for o in objects if o['visible']]
             #if self.target in visible_objects:
             #    reward += GOAL_SUCCESS_REWARD
-            self.success = self.target['Bowl'] and self.target['Tomato']
+            self.success = self.target['Microwave'] and self.target['Tomato']
             if self.success:
                 reward += GOAL_SUCCESS_REWARD
 
@@ -127,8 +145,8 @@ class Episode:
             self._env.reset(scene)
 
         # For now, single target.
-        self.target = {'Tomato':False,'Bowl':False}
-        self.triedFind = {'Tomato':False, 'Bowl':False}
+        self.target = {'Tomato':False,'Microwave':False}
+        self.triedFind = {'Tomato':False, 'Microwave':False}
         self.success = False
         self.cur_scene = scene
         self.actions_taken = []
