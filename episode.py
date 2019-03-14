@@ -80,8 +80,6 @@ class Episode:
                 reward += GOAL_SUCCESS_REWARD
         '''
         if action['action'] == 'LookTomato':
-
-            self.triedFind['Tomato'] = True
             objects = self._env.last_event.metadata['objects']
             for o in objects:
                 if o['visible'] and o['objectType'] == 'Tomato' and self.target['Tomato'] == False: # Check if already picked up
@@ -90,6 +88,7 @@ class Episode:
                     is_tomato_picked_up = self._env.pickup_tomato(tomato_id)
 
                     if is_tomato_picked_up:
+                        self.triedFind['Tomato'] = True
                         self.target['Tomato'] = True
                         reward += GOAL_SUCCESS_REWARD
             # visible_objects = [o['objectType'] for o in objects if o['visible']]
@@ -98,8 +97,6 @@ class Episode:
             #     reward += GOAL_SUCCESS_REWARD
 
         if action['action'] == 'LookMicrowave':
-            self.triedFind['Microwave'] = True
-
             objects = self._env.last_event.metadata['objects']
             for o in objects:
                 if o['visible'] and o['objectType'] == 'Microwave' and self.target['Microwave'] == False:  # Check if already picked up
@@ -108,6 +105,7 @@ class Episode:
                     is_cooked = self._env.cook_tomato(microwave_id, self.cookId['Tomato'])
 
                     if is_cooked:
+                        self.triedFind['Microwave'] = True
                         self.target['Microwave'] = True
                         reward += GOAL_SUCCESS_REWARD
             # objects = self._env.last_event.metadata['objects']
