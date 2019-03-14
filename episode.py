@@ -104,8 +104,16 @@ class Episode:
                     self.cookId['Microwave'] = microwave_id
                     is_cooked = self._env.cook_tomato(microwave_id, self.cookId['Tomato'])
 
-                    if is_cooked:
+                    if is_cooked == 1:
                         self.triedFind['Microwave'] = True
+                        reward += 1
+
+                    elif is_cooked == 3:
+                        self.triedFind['PlaceTomato'] = True
+                        reward += 3
+
+                    elif is_cooked == 5:
+                        self.triedFind['Cook'] = True
                         self.target['Microwave'] = True
                         reward += GOAL_SUCCESS_REWARD
             # objects = self._env.last_event.metadata['objects']
@@ -147,7 +155,7 @@ class Episode:
         # For now, single target.
         self.target = {'Tomato':False,'Microwave':False}
         self.cookId = {'Tomato':-1,'Microwave':-1}
-        self.triedFind = {'Tomato':False, 'Microwave':False}
+        self.triedFind = {'Tomato':False, 'Microwave':False, 'PlaceTomato':False, 'Cook':False}
         self.success = False
         self.cur_scene = scene
         self.actions_taken = []

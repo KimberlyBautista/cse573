@@ -148,24 +148,28 @@ class Environment:
             return False
 
     def cook_tomato(self, microwave_id, tomato_id):
+        points = 0
         try:
             event = self.controller.step(dict(action='OpenObject', objectId=microwave_id), raise_for_failure=True)
+            points += 1
         except:
             print("Did not open microwave")
-            return False
+            return points
 
         try:
             event = self.controller.step(dict(action='PlaceHeldObject', objectId=tomato_id), raise_for_failure=True)
+            points += 2
         except:
             print("Did not place tomato")
-            return False
+            return points
 
         try:
             event = self.controller.step(dict(action='CloseObject', objectId=microwave_id), raise_for_failure=True)
-            return True
+            points += 2
+            return points
         except:
             print("Did not close microwave")
-            return False
+            return points
 
 
     @property
